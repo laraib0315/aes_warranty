@@ -1,0 +1,19 @@
+import 'package:flutter/material.dart';
+
+class UserManagementPage extends StatefulWidget {
+  const UserManagementPage({super.key});
+
+  @override
+  State<UserManagementPage> createState() => _UserManagementPageState();
+}
+
+class _UserManagementPageState extends State<UserManagementPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('User Management')),
+      body:
+          const Center(child: Text('Admin only: Add/edit users, assign roles')),
+    );
+  }
+}
