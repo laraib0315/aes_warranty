@@ -12,12 +12,13 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-        // ✅ Kotlin DSL syntax
         isCoreLibraryDesugaringEnabled = true
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        }
     }
 
     defaultConfig {
@@ -36,7 +37,6 @@ android {
 }
 
 dependencies {
-    // ✅ Desugaring library
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
 

@@ -19,7 +19,6 @@ dependencies:
   uuid: ^4.3.3
   shared_preferences: ^2.2.3
   mobile_scanner: ^5.1.1
-  printing: ^5.12.0
   pdf: ^3.10.7
   path_provider: ^2.1.2
 
@@ -27,11 +26,9 @@ dependencies:
   hive: ^2.2.3                # Offline database
   hive_flutter: ^1.1.0        # Hive for Flutter
   barcode: ^2.2.6             # Barcode generate (CODE128)
-  flutter_local_notifications: ^17.1.0   # Replace 16.3.3 with 17.1.0
-  email_otp: ^2.0.0           # Email OTP login (optional, main fake bhi use kar sakta hu)
+  
   google_sign_in: ^6.1.0      # Google login
   url_launcher: ^6.2.5        # Open warranty link
-  share_plus: ^9.0.0          # Share PDF / warranty card
   permission_handler: ^11.0.0 # Camera permission on mobile
 
 dev_dependencies:
