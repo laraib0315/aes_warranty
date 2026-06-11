@@ -39,8 +39,17 @@ dev_dependencies:
   hive_generator: ^2.0.1
   build_runner: ^2.4.13
   package_rename: ^1.10.1
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
   assets:
     - assets/aes_logo.svg
+    - assets/logo.png
+
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/logo.png"
+  web:
+    generate: true
+    image_path: "assets/logo.png"
