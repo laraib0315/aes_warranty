@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 import 'customer_model.dart';
 import 'product_model.dart';
-
+import 'payment_model.dart';
 part 'warranty_model.g.dart';
 
 @HiveType(typeId: 6)
@@ -12,77 +12,98 @@ enum WarrantyStatus {
   expired,
 }
 
-@HiveType(typeId: 10)
-class ScrapInfo {
-  @HiveField(0)
-  final String metalType; // Copper or Silver
-  
-  @HiveField(1)
-  final double weight;
-  
-  @HiveField(2)
-  final String weightUnit; // kg or g
-
-  ScrapInfo({required this.metalType, required this.weight, required this.weightUnit});
-}
-
-@HiveType(typeId: 11)
-class WarrantyItem {
-  @HiveField(0)
-  final String uid; // From QR/Barcode
-  
-  @HiveField(1)
-  final ProductModel product;
-
-  WarrantyItem({required this.uid, required this.product});
-}
-
 @HiveType(typeId: 7)
 class WarrantyModel {
   @HiveField(0)
   final String id; // UUID
 
   @HiveField(1)
-  final CustomerModel customer;
+  String uid; // Unique ID from QR/barcode (e.g., AES-UID-12345)
 
   @HiveField(2)
-  final List<WarrantyItem> items;
+  CustomerModel customer;
 
   @HiveField(3)
-  final DateTime saleDate;
+  ProductModel product;
 
   @HiveField(4)
-  final double totalAmount;
+  DateTime saleDate;
 
   @HiveField(5)
-  final double paidAmount;
+  double? sellingPrice; // actual price paid by customer
 
   @HiveField(6)
-  final bool isPaid; // Toggle: Paid / Unpaid
+  DateTime motorExpiryDate; // for fans, otherwise same as board
 
   @HiveField(7)
-  final ScrapInfo? scrapInfo; // Advance Option: Old fan exchange
+  DateTime boardExpiryDate; // for fans, otherwise same as motor
 
   @HiveField(8)
-  final WarrantyStatus status;
+  WarrantyStatus status;
 
   @HiveField(9)
-  final bool isDeleted;
+  bool isDeleted;
 
+  // Payment tracking
   @HiveField(10)
-  final String createdBy; // Username of employee
+  double totalPaid; // total amount paid so far
+
+  @HiveField(11)
+  double totalAmount; // total bill amount
+
+  @HiveField(12)
+  bool isFullyPaid; // if totalPaid >= totalAmount
+
+  @HiveField(13)
+  List<PaymentModel> payments; // list of payment installments
 
   WarrantyModel({
     required this.id,
+    required this.uid,
     required this.customer,
-    required this.items,
+    required this.product,
     required this.saleDate,
-    required this.totalAmount,
-    this.paidAmount = 0,
-    this.isPaid = true,
-    this.scrapInfo,
-    this.status = WarrantyStatus.active,
+    this.sellingPrice,
+    required this.motorExpiryDate,
+    required this.boardExpiryDate,
+    required this.status,
     this.isDeleted = false,
-    required this.createdBy,
+    this.totalPaid = 0,
+    required this.totalAmount,
+    this.isFullyPaid = false,
+    this.payments = const [],
   });
+
+  WarrantyModel copyWith({
+    String? uid,
+    CustomerModel? customer,
+    ProductModel? product,
+    DateTime? saleDate,
+    double? sellingPrice,
+    DateTime? motorExpiryDate,
+    DateTime? boardExpiryDate,
+    WarrantyStatus? status,
+    bool? isDeleted,
+    double? totalPaid,
+    double? totalAmount,
+    bool? isFullyPaid,
+    List<PaymentModel>? payments,
+  }) {
+    return WarrantyModel(
+      id: id,
+      uid: uid ?? this.uid,
+      customer: customer ?? this.customer,
+      product: product ?? this.product,
+      saleDate: saleDate ?? this.saleDate,
+      sellingPrice: sellingPrice ?? this.sellingPrice,
+      motorExpiryDate: motorExpiryDate ?? this.motorExpiryDate,
+      boardExpiryDate: boardExpiryDate ?? this.boardExpiryDate,
+      status: status ?? this.status,
+      isDeleted: isDeleted ?? this.isDeleted,
+      totalPaid: totalPaid ?? this.totalPaid,
+      totalAmount: totalAmount ?? this.totalAmount,
+      isFullyPaid: isFullyPaid ?? this.isFullyPaid,
+      payments: payments ?? this.payments,
+    );
+  }
 }
