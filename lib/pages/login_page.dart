@@ -15,133 +15,97 @@ class _LoginPageState extends State<LoginPage> {
   bool _isOtpSent = false;
   bool _isLoading = false;
 
+  void _showMessage(String msg, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text(msg),
+          backgroundColor: isError ? Colors.red : Colors.green),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: Center(
+        child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 60),
-              Image.asset('assets/aes_logo.svg', height: 80),
-              const SizedBox(height: 20),
-              const Text(
-                'AES Warranty',
-                style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFE7712D)),
-              ),
-              const SizedBox(height: 8),
-              const Text('Powering Trust, Delivering Quality'),
+              const Text('AES Warranty',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
               const SizedBox(height: 40),
-
-              // Google Sign-In Button
-              ElevatedButton.icon(
+              ElevatedButton(
                 onPressed: authProvider.isLoading
                     ? null
                     : () async {
+                        setState(() => _isLoading = true);
                         final success = await authProvider.signInWithGoogle();
-                        if (!mounted) return; // ✅ Added
-                        if (success && mounted) {
-                          Navigator.pushReplacementNamed(context, '/home');
+                        setState(() => _isLoading = false);
+                        if (!mounted) return;
+                        if (success) {
+                          // Navigate only if route exists
+                          if (ModalRoute.of(context)?.settings.name !=
+                              '/home') {
+                            Navigator.pushReplacementNamed(context, '/home');
+                          } else {
+                            _showMessage('Already logged in');
+                          }
+                        } else {
+                          _showMessage('Google Sign-In failed', isError: true);
                         }
                       },
-                icon: const Icon(Icons.g_mobiledata, size: 24),
-                label: const Text('Continue with Google'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black87,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
+                child: const Text('Sign in with Google'),
               ),
-
               const SizedBox(height: 20),
-              const Row(children: [
-                Expanded(child: Divider()),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('OR')),
-                Expanded(child: Divider())
-              ]),
-              const SizedBox(height: 20),
-
               TextField(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
-                ),
+                decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
-
-              if (_isOtpSent) ...[
+              if (_isOtpSent)
                 TextField(
                   controller: _otpController,
-                  decoration: const InputDecoration(
-                    labelText: 'OTP (6 digits)',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock),
-                  ),
-                  keyboardType: TextInputType.number,
+                  decoration:
+                      const InputDecoration(labelText: 'OTP (6 digits)'),
                   maxLength: 6,
+                  keyboardType: TextInputType.number,
                 ),
-                const SizedBox(height: 16),
-              ],
-
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: authProvider.isLoading
-                      ? null
-                      : () async {
-                          if (!_isOtpSent) {
-                            setState(() => _isLoading = true);
-                            final sent = await authProvider
-                                .sendOtp(_emailController.text);
-                            if (!mounted) return; // ✅ Added
-                            setState(() => _isLoading = false);
-                            if (sent && mounted) {
-                              setState(() => _isOtpSent = true);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'OTP sent to your email (demo: 123456)')),
-                              );
-                            }
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: authProvider.isLoading
+                    ? null
+                    : () async {
+                        setState(() => _isLoading = true);
+                        if (!_isOtpSent) {
+                          final sent =
+                              await authProvider.sendOtp(_emailController.text);
+                          setState(() => _isLoading = false);
+                          if (!mounted) return;
+                          if (sent) {
+                            setState(() => _isOtpSent = true);
+                            _showMessage('OTP sent: 123456');
                           } else {
-                            setState(() => _isLoading = true);
-                            final verified = await authProvider.verifyOtp(
-                                _emailController.text, _otpController.text);
-                            if (!mounted) return; // ✅ Added
-                            setState(() => _isLoading = false);
-                            if (verified && mounted) {
-                              Navigator.pushReplacementNamed(context, '/home');
-                            } else if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Invalid OTP')),
-                              );
-                            }
+                            _showMessage('Failed to send OTP', isError: true);
                           }
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE7712D),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                  ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(_isOtpSent ? 'Verify OTP' : 'Send OTP'),
-                ),
+                        } else {
+                          final verified = await authProvider.verifyOtp(
+                              _emailController.text, _otpController.text);
+                          setState(() => _isLoading = false);
+                          if (!mounted) return;
+                          if (verified) {
+                            Navigator.pushReplacementNamed(context, '/home');
+                          } else {
+                            _showMessage('Invalid OTP', isError: true);
+                          }
+                        }
+                      },
+                child: _isLoading
+                    ? const CircularProgressIndicator()
+                    : Text(_isOtpSent ? 'Verify OTP' : 'Send OTP'),
               ),
             ],
           ),
