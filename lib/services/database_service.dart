@@ -83,6 +83,7 @@ class DatabaseService {
     Hive.registerAdapter(ProductModelAdapter());
     Hive.registerAdapter(CustomerModelAdapter());
     Hive.registerAdapter(WarrantyStatusAdapter());
+    Hive.registerAdapter(UserRoleAdapter());
     Hive.registerAdapter(WarrantyModelAdapter());
     Hive.registerAdapter(PaymentModelAdapter());
     Hive.registerAdapter(DraftTypeAdapter());
