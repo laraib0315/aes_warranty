@@ -4,7 +4,6 @@ import 'services/database_service.dart';
 import 'providers/auth_provider.dart';
 import 'providers/data_provider.dart';
 import 'providers/settings_provider.dart';
-// Removed unused import: 'pages/login_page.dart' (kyunke LoginPage AppRoutes mein use ho raha hai, yahan nahi)
 import 'utils/themes.dart';
 import 'utils/app_routes.dart';
 
@@ -13,9 +12,9 @@ void main() async {
   try {
     await DatabaseService.instance.init();
     runApp(const MyApp());
-  } catch (e, _) {
-    // stackTrace unused, isliye underscore (_) use kiya
-    debugPrint('Init error: $e');
+  } catch (e, stackTrace) {
+    debugPrint('❌ Fatal init error: $e');
+    debugPrint(stackTrace.toString());
     runApp(ErrorApp(error: e.toString()));
   }
 }

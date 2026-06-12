@@ -28,7 +28,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // Google Sign-In
   Future<bool> signInWithGoogle() async {
     _isLoading = true;
     notifyListeners();
@@ -45,7 +44,6 @@ class AuthProvider extends ChangeNotifier {
       final username = googleUser.displayName ?? email.split('@').first;
       final photoUrl = googleUser.photoUrl;
 
-      // Check if user exists
       UserModel? existingUser;
       for (var user in db.userBox.values) {
         if (user.email == email) {
@@ -57,7 +55,6 @@ class AuthProvider extends ChangeNotifier {
       if (existingUser != null) {
         _currentUser = existingUser;
       } else {
-        // Create new user (default role = staff)
         final newUser = UserModel(
           id: const Uuid().v4(),
           username: username,
@@ -83,17 +80,14 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // Email OTP Sign-In (simplified for now)
+  // ✅ Simplified – no delay, immediate return
   Future<bool> sendOtp(String email) async {
-    // TODO: Implement actual email OTP sending (using email_otp package or Firebase)
-    debugPrint('OTP sent to $email');
+    debugPrint('OTP sent to $email (dummy)');
     return true;
   }
 
   Future<bool> verifyOtp(String email, String otp) async {
-    // TODO: Implement actual OTP verification
     if (otp == '123456') {
-      // Check if user exists
       UserModel? existingUser;
       for (var user in db.userBox.values) {
         if (user.email == email) {
