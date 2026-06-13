@@ -9,14 +9,8 @@ import 'utils/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  try {
-    await DatabaseService.instance.init();
-    runApp(const MyApp());
-  } catch (e, stackTrace) {
-    debugPrint('❌ Fatal init error: $e');
-    debugPrint(stackTrace.toString());
-    runApp(ErrorApp(error: e.toString()));
-  }
+  await DatabaseService.instance.init();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -42,31 +36,6 @@ class MyApp extends StatelessWidget {
             routes: AppRoutes.routes,
           );
         },
-      ),
-    );
-  }
-}
-
-class ErrorApp extends StatelessWidget {
-  final String error;
-  const ErrorApp({super.key, required this.error});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              const Text('App Initialization Failed'),
-              const SizedBox(height: 8),
-              Text(error, textAlign: TextAlign.center),
-            ],
-          ),
-        ),
       ),
     );
   }

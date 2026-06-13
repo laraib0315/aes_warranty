@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import 'web_login_page.dart'; // Web login page ko import kiya
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,6 +26,14 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Check karein ke screen size desktop (PC/Laptop) ka hai ya nahi
+    final isDesktop = MediaQuery.of(context).size.width > 800;
+
+    if (isDesktop) {
+      return const WebLoginPage(); // Agar desktop hai to professional web login screen dikhao
+    }
+
+    // 2. Agar mobile size hai to neeche wala simple mobile layout render hoga
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
@@ -37,8 +46,10 @@ class _LoginPageState extends State<LoginPage> {
               const Text('AES Warranty',
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
               const SizedBox(height: 40),
+
+              // Google Sign-In Button
               ElevatedButton(
-                onPressed: authProvider.isLoading
+                onPressed: authProvider.isLoading || _isLoading
                     ? null
                     : () async {
                         setState(() => _isLoading = true);
@@ -46,7 +57,6 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() => _isLoading = false);
                         if (!mounted) return;
                         if (success) {
-                          // Navigate only if route exists
                           if (ModalRoute.of(context)?.settings.name !=
                               '/home') {
                             Navigator.pushReplacementNamed(context, '/home');
@@ -60,12 +70,16 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Text('Sign in with Google'),
               ),
               const SizedBox(height: 20),
+
+              // Email Input Field
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
+
+              // OTP Input Field (Sirf tab dikhega jab OTP send ho chuka ho)
               if (_isOtpSent)
                 TextField(
                   controller: _otpController,
@@ -75,8 +89,10 @@ class _LoginPageState extends State<LoginPage> {
                   keyboardType: TextInputType.number,
                 ),
               const SizedBox(height: 16),
+
+              // OTP Send/Verify Button
               ElevatedButton(
-                onPressed: authProvider.isLoading
+                onPressed: authProvider.isLoading || _isLoading
                     ? null
                     : () async {
                         setState(() => _isLoading = true);
@@ -104,7 +120,11 @@ class _LoginPageState extends State<LoginPage> {
                         }
                       },
                 child: _isLoading
-                    ? const CircularProgressIndicator()
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : Text(_isOtpSent ? 'Verify OTP' : 'Send OTP'),
               ),
             ],
