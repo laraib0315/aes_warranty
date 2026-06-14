@@ -37,6 +37,9 @@ class UserModel {
   @HiveField(6)
   bool isActive; // account active or disabled
 
+  @HiveField(7)
+  bool isApproved;
+
   UserModel({
     required this.id,
     required this.username,
@@ -45,6 +48,7 @@ class UserModel {
     required this.createdAt,
     this.photoUrl,
     this.isActive = true,
+    this.isApproved = false,
   });
 
   // Copy with method (for updates)

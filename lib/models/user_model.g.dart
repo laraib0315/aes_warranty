@@ -24,13 +24,14 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       createdAt: fields[4] as DateTime,
       photoUrl: fields[5] as String?,
       isActive: fields[6] as bool,
+      isApproved: fields[7] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeByte(5)
       ..write(obj.photoUrl)
       ..writeByte(6)
-      ..write(obj.isActive);
+      ..write(obj.isActive)
+      ..writeByte(7)
+      ..write(obj.isApproved);
   }
 
   @override
