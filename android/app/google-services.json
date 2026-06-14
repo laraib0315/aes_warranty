@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "376803339079",
+    "project_id": "aes-warranty",
+    "storage_bucket": "aes-warranty.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376803339079:android:226c3137e9d0071c12ba62",
+        "android_client_info": {
+          "package_name": "com.aes.warranty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzocMvfBz5f2ahToVq2l0jOvZuTx1fbhA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
