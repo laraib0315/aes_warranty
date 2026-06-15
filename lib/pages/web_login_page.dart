@@ -56,11 +56,13 @@ class _WebLoginPageState extends State<WebLoginPage> {
                       Image.asset('assets/aes_logo.svg',
                           height: 100, color: Colors.white),
                       const SizedBox(height: 30),
-                      const Text('AES Warranty',
-                          style: TextStyle(
-                              fontSize: 42,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
+                      const Text(
+                        'AES Warranty',
+                        style: TextStyle(
+                            fontSize: 42,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
                       const SizedBox(height: 16),
                       const Text('Powering Trust, Delivering Quality',
                           style:
@@ -69,10 +71,10 @@ class _WebLoginPageState extends State<WebLoginPage> {
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 40),
                         child: Text(
-                            'Digital Warranty Management System\nfor Electrical Products',
-                            textAlign: TextAlign.center,
-                            style:
-                                TextStyle(fontSize: 14, color: Colors.white60)),
+                          'Digital Warranty Management System\nfor Electrical Products',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14, color: Colors.white60),
+                        ),
                       ),
                     ],
                   ),
@@ -90,9 +92,10 @@ class _WebLoginPageState extends State<WebLoginPage> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 20,
-                          offset: const Offset(0, 5))
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 20,
+                        offset: const Offset(0, 5),
+                      ),
                     ],
                   ),
                   child: Column(
@@ -103,11 +106,13 @@ class _WebLoginPageState extends State<WebLoginPage> {
                           children: [
                             Image.asset('assets/aes_logo.svg', height: 60),
                             const SizedBox(height: 16),
-                            const Text('AES Warranty',
-                                style: TextStyle(
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFFE7712D))),
+                            const Text(
+                              'AES Warranty',
+                              style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFE7712D)),
+                            ),
                             const SizedBox(height: 8),
                           ],
                         ),
@@ -118,6 +123,8 @@ class _WebLoginPageState extends State<WebLoginPage> {
                       const Text('Sign in to manage warranties',
                           style: TextStyle(color: Colors.grey)),
                       const SizedBox(height: 32),
+
+                      // Google Sign-In with official logo
                       SizedBox(
                         width: double.infinity,
                         height: 52,
@@ -136,10 +143,16 @@ class _WebLoginPageState extends State<WebLoginPage> {
                                   }
                                 },
                           icon: Image.network(
-                              'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
-                              height: 24,
-                              width: 24),
-                          label: const Text('Continue with Google'),
+                            'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
+                            height: 24,
+                            width: 24,
+                          ),
+                          label: const Text('Continue with Google',
+                              style: TextStyle(fontSize: 16)),
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -148,9 +161,10 @@ class _WebLoginPageState extends State<WebLoginPage> {
                         Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Text('OR')),
-                        Expanded(child: Divider())
+                        Expanded(child: Divider()),
                       ]),
                       const SizedBox(height: 20),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -160,15 +174,18 @@ class _WebLoginPageState extends State<WebLoginPage> {
                                 style: TextStyle(
                                     fontWeight: _isSignUp
                                         ? FontWeight.normal
-                                        : FontWeight.bold)),
+                                        : FontWeight.bold,
+                                    fontSize: 16)),
                           ),
+                          const SizedBox(width: 20),
                           TextButton(
                             onPressed: () => setState(() => _isSignUp = true),
                             child: Text('Sign Up',
                                 style: TextStyle(
                                     fontWeight: _isSignUp
                                         ? FontWeight.bold
-                                        : FontWeight.normal)),
+                                        : FontWeight.normal,
+                                    fontSize: 16)),
                           ),
                         ],
                       ),
@@ -176,28 +193,31 @@ class _WebLoginPageState extends State<WebLoginPage> {
                         TextField(
                           controller: _usernameController,
                           decoration: const InputDecoration(
-                              labelText: 'Username',
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)))),
+                            labelText: 'Username',
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                          ),
                         ),
                       const SizedBox(height: 16),
                       TextField(
                         controller: _emailController,
                         decoration: const InputDecoration(
-                            labelText: 'Email',
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)))),
+                          labelText: 'Email',
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       TextField(
                         controller: _passwordController,
                         decoration: const InputDecoration(
-                            labelText: 'Password',
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)))),
+                          labelText: 'Password',
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(12))),
+                        ),
                         obscureText: true,
                       ),
                       const SizedBox(height: 24),
@@ -213,14 +233,16 @@ class _WebLoginPageState extends State<WebLoginPage> {
                                   if (_isSignUp) {
                                     success =
                                         await authProvider.signUpWithEmail(
-                                            _emailController.text,
-                                            _passwordController.text,
-                                            _usernameController.text);
+                                      _emailController.text,
+                                      _passwordController.text,
+                                      _usernameController.text,
+                                    );
                                   } else {
                                     success =
                                         await authProvider.signInWithEmail(
-                                            _emailController.text,
-                                            _passwordController.text);
+                                      _emailController.text,
+                                      _passwordController.text,
+                                    );
                                   }
                                   setState(() => _isLoading = false);
                                   if (!mounted) return;
@@ -230,13 +252,15 @@ class _WebLoginPageState extends State<WebLoginPage> {
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFE7712D),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12))),
+                            backgroundColor: const Color(0xFFE7712D),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                          ),
                           child: _isLoading
                               ? const CircularProgressIndicator(
                                   color: Colors.white)
-                              : Text(_isSignUp ? 'Sign Up' : 'Sign In'),
+                              : Text(_isSignUp ? 'Sign Up' : 'Sign In',
+                                  style: const TextStyle(fontSize: 16)),
                         ),
                       ),
                     ],

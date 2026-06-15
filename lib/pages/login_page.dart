@@ -61,8 +61,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 28),
 
-                  // Google Sign-In
-                  ElevatedButton.icon(
+                  // Google Sign-In with official logo
+                  OutlinedButton.icon(
                     onPressed: authProvider.isLoading
                         ? null
                         : () async {
@@ -78,9 +78,14 @@ class _LoginPageState extends State<LoginPage> {
                                   isError: true);
                             }
                           },
-                    icon: const Icon(Icons.g_mobiledata),
-                    label: const Text('Continue with Google'),
-                    style: ElevatedButton.styleFrom(
+                    icon: Image.network(
+                      'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
+                      height: 24,
+                      width: 24,
+                    ),
+                    label: const Text('Continue with Google',
+                        style: TextStyle(fontSize: 16)),
+                    style: OutlinedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14)),
