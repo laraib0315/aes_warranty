@@ -18,15 +18,16 @@ class _AddProductPageState extends State<AddProductPage> {
   final _costPriceController = TextEditingController();
   final _sellingPriceController = TextEditingController();
   final _stockController = TextEditingController();
-  final _lowStockController = TextEditingController();
-  final _motorWarrantyController = TextEditingController();
-  final _boardWarrantyController = TextEditingController();
+  final _lowStockController =
+      TextEditingController(text: '5'); // Controller linked correctly
+  final _motorWarrantyController =
+      TextEditingController(text: '12'); // Controller linked correctly
+  final _boardWarrantyController =
+      TextEditingController(text: '24'); // Controller linked correctly
 
   CategoryModel? _selectedCategory;
   BrandModel? _selectedBrand;
   bool _hasSellingPrice = true;
-  int _motorWarrantyMonths = 12;
-  int _boardWarrantyMonths = 24;
 
   List<CategoryModel> _categories = [];
   List<BrandModel> _brands = [];
@@ -72,8 +73,8 @@ class _AddProductPageState extends State<AddProductPage> {
       lowStockLimit: int.parse(_lowStockController.text),
       createdAt: DateTime.now(),
       lastUpdated: DateTime.now(),
-      motorWarrantyMonths: _motorWarrantyMonths,
-      boardWarrantyMonths: _boardWarrantyMonths,
+      motorWarrantyMonths: int.tryParse(_motorWarrantyController.text) ?? 12,
+      boardWarrantyMonths: int.tryParse(_boardWarrantyController.text) ?? 24,
     );
 
     await DatabaseService.instance.productBox.put(product.id, product);
@@ -82,6 +83,18 @@ class _AddProductPageState extends State<AddProductPage> {
       const SnackBar(content: Text('Product added successfully')),
     );
     Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _costPriceController.dispose();
+    _sellingPriceController.dispose();
+    _stockController.dispose();
+    _lowStockController.dispose();
+    _motorWarrantyController.dispose();
+    _boardWarrantyController.dispose();
+    super.dispose();
   }
 
   @override
@@ -160,7 +173,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 decoration:
                     const InputDecoration(labelText: 'Low Stock Alert Limit'),
                 keyboardType: TextInputType.number,
-                initialValue: '5',
+                validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 12),
               const Text('Warranty Periods (for Fans)',
@@ -174,8 +187,6 @@ class _AddProductPageState extends State<AddProductPage> {
                       decoration:
                           const InputDecoration(labelText: 'Motor (months)'),
                       keyboardType: TextInputType.number,
-                      onChanged: (v) =>
-                          _motorWarrantyMonths = int.tryParse(v) ?? 12,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -185,8 +196,6 @@ class _AddProductPageState extends State<AddProductPage> {
                       decoration:
                           const InputDecoration(labelText: 'Board (months)'),
                       keyboardType: TextInputType.number,
-                      onChanged: (v) =>
-                          _boardWarrantyMonths = int.tryParse(v) ?? 24,
                     ),
                   ),
                 ],

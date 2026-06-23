@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../providers/auth_provider.dart';
 import 'pending_approval_page.dart';
 import 'web_login_page.dart';
@@ -22,8 +21,11 @@ class _LoginPageState extends State<LoginPage> {
   void _showMessage(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(msg),
-          backgroundColor: isError ? Colors.red : Colors.green),
+        content: Text(msg),
+        backgroundColor: isError ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 3),
+      ),
     );
   }
 
@@ -38,172 +40,272 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Card(
-            elevation: 8,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset('assets/aes_logo.svg', height: 70),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'AES Warranty',
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFE7712D)),
-                  ),
-                  const SizedBox(height: 28),
-
-                  // Google Sign-In with official logo
-                  OutlinedButton.icon(
-                    onPressed: authProvider.isLoading
-                        ? null
-                        : () async {
-                            setState(() => _isLoading = true);
-                            final success =
-                                await authProvider.signInWithGoogle();
-                            setState(() => _isLoading = false);
-                            if (!mounted) return;
-                            if (success) {
-                              Navigator.pushReplacementNamed(context, '/home');
-                            } else {
-                              _showMessage('Google Sign-In failed',
-                                  isError: true);
-                            }
-                          },
-                    icon: Image.network(
-                      'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
-                      height: 24,
-                      width: 24,
-                    ),
-                    label: const Text('Continue with Google',
-                        style: TextStyle(fontSize: 16)),
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Row(children: [
-                    Expanded(child: Divider()),
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text('OR')),
-                    Expanded(child: Divider()),
-                  ]),
-                  const SizedBox(height: 16),
-
-                  // Toggle Sign In / Sign Up
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 450),
+              child: Card(
+                elevation: 8,
+                shadowColor: Colors.black12,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextButton(
-                        onPressed: () => setState(() => _isSignUp = false),
-                        child: Text('Sign In',
-                            style: TextStyle(
+                      // Logo – Bigger size
+                      Image.asset(
+                        'assets/logo.png',
+                        height: 90,
+                        width: 90,
+                        errorBuilder: (_, __, ___) => const Icon(
+                          Icons.verified,
+                          size: 80,
+                          color: Color(0xFFE7712D),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'AES Warranty',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFE7712D),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Powering Trust, Delivering Quality',
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Digital Warranty Management System',
+                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+
+                      // Google Sign-In – Proper button
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: OutlinedButton(
+                          onPressed: authProvider.isLoading
+                              ? null
+                              : () async {
+                                  setState(() => _isLoading = true);
+                                  final success =
+                                      await authProvider.signInWithGoogle();
+                                  setState(() => _isLoading = false);
+                                  if (!mounted) return;
+                                  if (success) {
+                                    Navigator.pushReplacementNamed(
+                                        context, '/home');
+                                  } else {
+                                    _showMessage(
+                                        'Google Sign-In failed. Check internet.',
+                                        isError: true);
+                                  }
+                                },
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            side: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/google_logo.png',
+                                height: 28,
+                                width: 28,
+                                errorBuilder: (_, __, ___) => const Icon(
+                                  Icons.g_mobiledata,
+                                  size: 28,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              const Text(
+                                'Continue with Google',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Row(
+                        children: [
+                          Expanded(child: Divider()),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Text('OR',
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 14)),
+                          ),
+                          Expanded(child: Divider()),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Toggle
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () => setState(() => _isSignUp = false),
+                            child: Text(
+                              'Sign In',
+                              style: TextStyle(
                                 fontWeight: _isSignUp
                                     ? FontWeight.normal
                                     : FontWeight.bold,
-                                fontSize: 16)),
-                      ),
-                      const SizedBox(width: 20),
-                      TextButton(
-                        onPressed: () => setState(() => _isSignUp = true),
-                        child: Text('Sign Up',
-                            style: TextStyle(
+                                fontSize: 18,
+                                color: _isSignUp
+                                    ? Colors.grey
+                                    : const Color(0xFFE7712D),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 24),
+                          TextButton(
+                            onPressed: () => setState(() => _isSignUp = true),
+                            child: Text(
+                              'Sign Up',
+                              style: TextStyle(
                                 fontWeight: _isSignUp
                                     ? FontWeight.bold
                                     : FontWeight.normal,
-                                fontSize: 16)),
+                                fontSize: 18,
+                                color: _isSignUp
+                                    ? const Color(0xFFE7712D)
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      if (_isSignUp)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: TextField(
+                            controller: _usernameController,
+                            decoration: InputDecoration(
+                              labelText: 'Username',
+                              labelStyle: const TextStyle(fontSize: 15),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              prefixIcon: const Icon(Icons.person_outline),
+                            ),
+                          ),
+                        ),
+
+                      TextField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: const TextStyle(fontSize: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          prefixIcon: const Icon(Icons.email_outlined),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 16),
+
+                      TextField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: const TextStyle(fontSize: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          prefixIcon: const Icon(Icons.lock_outline),
+                        ),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 28),
+
+                      ElevatedButton(
+                        onPressed: authProvider.isLoading
+                            ? null
+                            : () async {
+                                setState(() => _isLoading = true);
+                                bool success;
+                                if (_isSignUp) {
+                                  success = await authProvider.signUpWithEmail(
+                                    _emailController.text.trim(),
+                                    _passwordController.text.trim(),
+                                    _usernameController.text.trim(),
+                                  );
+                                } else {
+                                  success = await authProvider.signInWithEmail(
+                                    _emailController.text.trim(),
+                                    _passwordController.text.trim(),
+                                  );
+                                }
+                                setState(() => _isLoading = false);
+                                if (!mounted) return;
+                                if (success) {
+                                  Navigator.pushReplacementNamed(
+                                      context, '/home');
+                                } else if (authProvider.approvalMessage !=
+                                    null) {
+                                  // Pending screen will show
+                                } else {
+                                  _showMessage(
+                                    _isSignUp
+                                        ? 'Sign-up failed. Email may exist or weak password.'
+                                        : 'Invalid email or password.',
+                                    isError: true,
+                                  );
+                                }
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFE7712D),
+                          minimumSize: const Size(double.infinity, 54),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                _isSignUp ? 'Sign Up' : 'Sign In',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                       ),
                     ],
                   ),
-                  if (_isSignUp)
-                    TextField(
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        labelText: 'Username',
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14)),
-                      ),
-                    ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                    ),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: authProvider.isLoading
-                        ? null
-                        : () async {
-                            setState(() => _isLoading = true);
-                            bool success;
-                            if (_isSignUp) {
-                              success = await authProvider.signUpWithEmail(
-                                _emailController.text,
-                                _passwordController.text,
-                                _usernameController.text,
-                              );
-                            } else {
-                              success = await authProvider.signInWithEmail(
-                                _emailController.text,
-                                _passwordController.text,
-                              );
-                            }
-                            setState(() => _isLoading = false);
-                            if (!mounted) return;
-                            if (success) {
-                              Navigator.pushReplacementNamed(context, '/home');
-                            } else if (authProvider.approvalMessage != null) {
-                              // pending screen already showing
-                            } else {
-                              _showMessage(
-                                  _isSignUp
-                                      ? 'Sign-up failed'
-                                      : 'Invalid credentials',
-                                  isError: true);
-                            }
-                          },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE7712D),
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14)),
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                                strokeWidth: 2, color: Colors.white))
-                        : Text(_isSignUp ? 'Sign Up' : 'Sign In',
-                            style: const TextStyle(fontSize: 16)),
-                  ),
-                ],
+                ),
               ),
             ),
           ),

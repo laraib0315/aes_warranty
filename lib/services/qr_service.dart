@@ -32,7 +32,7 @@ class QrService {
       gapless: false,
       embeddedImage: const AssetImage('assets/aes_logo.png'),
       embeddedImageStyle: const QrEmbeddedImageStyle(
-        size: const Size(20, 20),
+        size: Size(20, 20), // ✅ Removed extra const
       ),
     );
   }

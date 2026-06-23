@@ -51,6 +51,7 @@ flutter:
   assets:
     - assets/aes_logo.svg
     - assets/logo.png
+    - assets/google_logo.png
 
 flutter_launcher_icons:
   android: true

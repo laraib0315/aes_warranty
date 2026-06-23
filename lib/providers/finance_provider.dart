@@ -24,29 +24,35 @@ class FinanceProvider extends ChangeNotifier {
     final warranties =
         db.warrantyBox.values.where((w) => !w.isDeleted).toList();
 
-    _totalRevenue =
-        warranties.fold(0, (sum, w) => sum + (w.sellingPrice ?? w.totalAmount));
-    _totalProfit = warranties.fold(
-        0,
-        (sum, w) =>
-            sum + ((w.sellingPrice ?? w.totalAmount) - w.product.costPrice));
+    // Total Revenue – sum of all warranty totalAmounts
+    _totalRevenue = warranties.fold<double>(0, (sum, w) => sum + w.totalAmount);
+
+    // Total Profit – revenue minus cost of all items
+    _totalProfit = warranties.fold<double>(0, (sum, w) {
+      final cost =
+          w.items.fold<double>(0, (c, item) => c + item.product.costPrice);
+      return sum + (w.totalAmount - cost);
+    });
+
+    // Total Pending – unpaid amount from all warranties
     _totalPending = warranties
         .where((w) => !w.isFullyPaid)
-        .fold(0, (sum, w) => sum + (w.totalAmount - w.totalPaid));
+        .fold<double>(0, (sum, w) => sum + (w.totalAmount - w.totalPaid));
 
+    // Today's Collection
     final today = DateTime.now();
     _todayCollection = warranties
         .where((w) =>
             w.saleDate.year == today.year &&
             w.saleDate.month == today.month &&
             w.saleDate.day == today.day)
-        .fold(0, (sum, w) => sum + (w.sellingPrice ?? w.totalAmount));
+        .fold<double>(0, (sum, w) => sum + w.totalAmount);
 
+    // Monthly Revenue
     _monthlyRevenue = {};
     for (var w in warranties) {
       final key = w.saleDate.month;
-      _monthlyRevenue[key] =
-          (_monthlyRevenue[key] ?? 0) + (w.sellingPrice ?? w.totalAmount);
+      _monthlyRevenue[key] = (_monthlyRevenue[key] ?? 0) + w.totalAmount;
     }
 
     notifyListeners();

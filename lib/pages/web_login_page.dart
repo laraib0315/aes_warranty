@@ -25,250 +25,491 @@ class _WebLoginPageState extends State<WebLoginPage> {
     }
 
     final isDesktop = MediaQuery.of(context).size.width > 800;
+
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white,
-              const Color(0xFFE7712D).withValues(alpha: 0.05)
-            ],
-          ),
-        ),
-        child: Row(
-          children: [
-            if (isDesktop)
-              Expanded(
-                flex: 1,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFFE7712D), Color(0xFFC85711)],
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      backgroundColor: Colors.grey[50],
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1100),
+            child: isDesktop
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset('assets/aes_logo.svg',
-                          height: 100, color: Colors.white),
-                      const SizedBox(height: 30),
-                      const Text(
-                        'AES Warranty',
-                        style: TextStyle(
-                            fontSize: 42,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text('Powering Trust, Delivering Quality',
-                          style:
-                              TextStyle(fontSize: 18, color: Colors.white70)),
-                      const SizedBox(height: 40),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 40),
-                        child: Text(
-                          'Digital Warranty Management System\nfor Electrical Products',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 14, color: Colors.white60),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            Expanded(
-              flex: isDesktop ? 1 : 2,
-              child: Center(
-                child: Container(
-                  width: isDesktop ? 480 : double.infinity,
-                  margin: const EdgeInsets.all(24),
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 20,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (!isDesktop)
-                        Column(
+                      // Left Side - Branding
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset('assets/aes_logo.svg', height: 60),
-                            const SizedBox(height: 16),
+                            Image.asset(
+                              'assets/logo.png',
+                              height: 120,
+                              width: 120,
+                              errorBuilder: (_, __, ___) => const Icon(
+                                Icons.verified,
+                                size: 110,
+                                color: Color(0xFFE7712D),
+                              ),
+                            ),
+                            const SizedBox(height: 32),
                             const Text(
                               'AES Warranty',
                               style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFFE7712D)),
+                                fontSize: 38,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFE7712D),
+                              ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Powering Trust, Delivering Quality',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 40),
+                              child: Text(
+                                'Digital Warranty Management System\nfor Electrical Products',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                      const Text('Welcome Back',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 8),
-                      const Text('Sign in to manage warranties',
-                          style: TextStyle(color: Colors.grey)),
-                      const SizedBox(height: 32),
+                      ),
+                      const SizedBox(width: 48),
 
-                      // Google Sign-In with official logo
-                      SizedBox(
-                        width: double.infinity,
-                        height: 52,
-                        child: OutlinedButton.icon(
-                          onPressed: authProvider.isLoading
-                              ? null
-                              : () async {
-                                  setState(() => _isLoading = true);
-                                  final success =
-                                      await authProvider.signInWithGoogle();
-                                  setState(() => _isLoading = false);
-                                  if (!mounted) return;
-                                  if (success) {
-                                    Navigator.pushReplacementNamed(
-                                        context, '/web_home');
-                                  }
-                                },
-                          icon: Image.network(
-                            'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg',
-                            height: 24,
-                            width: 24,
+                      // Right Side - Login Form
+                      Expanded(
+                        flex: 1,
+                        child: Card(
+                          elevation: 8,
+                          shadowColor: Colors.black12,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(32),
                           ),
-                          label: const Text('Continue with Google',
-                              style: TextStyle(fontSize: 16)),
-                          style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      const Row(children: [
-                        Expanded(child: Divider()),
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text('OR')),
-                        Expanded(child: Divider()),
-                      ]),
-                      const SizedBox(height: 20),
+                          child: Padding(
+                            padding: const EdgeInsets.all(40),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Welcome Back',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                const Text(
+                                  'Sign in to manage warranties',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                const SizedBox(height: 36),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () => setState(() => _isSignUp = false),
-                            child: Text('Sign In',
-                                style: TextStyle(
-                                    fontWeight: _isSignUp
-                                        ? FontWeight.normal
-                                        : FontWeight.bold,
-                                    fontSize: 16)),
+                                // Google Sign-In – Proper button
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 56,
+                                  child: OutlinedButton(
+                                    onPressed: authProvider.isLoading
+                                        ? null
+                                        : () async {
+                                            setState(() => _isLoading = true);
+                                            final success = await authProvider
+                                                .signInWithGoogle();
+                                            setState(() => _isLoading = false);
+                                            if (!mounted) return;
+                                            if (success) {
+                                              Navigator.pushReplacementNamed(
+                                                context,
+                                                '/web_home',
+                                              );
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Google Sign-In failed. Check internet.'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                    style: OutlinedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      side: BorderSide(
+                                          color: Colors.grey.shade300),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          'assets/google_logo.png',
+                                          height: 28,
+                                          width: 28,
+                                          errorBuilder: (_, __, ___) =>
+                                              const Icon(
+                                            Icons.g_mobiledata,
+                                            size: 28,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 14),
+                                        const Text(
+                                          'Continue with Google',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                const Row(
+                                  children: [
+                                    Expanded(child: Divider()),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 16),
+                                      child: Text('OR',
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 14)),
+                                    ),
+                                    Expanded(child: Divider()),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Toggle
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          setState(() => _isSignUp = false),
+                                      child: Text(
+                                        'Sign In',
+                                        style: TextStyle(
+                                          fontWeight: _isSignUp
+                                              ? FontWeight.normal
+                                              : FontWeight.bold,
+                                          fontSize: 18,
+                                          color: _isSignUp
+                                              ? Colors.grey
+                                              : const Color(0xFFE7712D),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 24),
+                                    TextButton(
+                                      onPressed: () =>
+                                          setState(() => _isSignUp = true),
+                                      child: Text(
+                                        'Sign Up',
+                                        style: TextStyle(
+                                          fontWeight: _isSignUp
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          fontSize: 18,
+                                          color: _isSignUp
+                                              ? const Color(0xFFE7712D)
+                                              : Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                if (_isSignUp)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 16),
+                                    child: TextField(
+                                      controller: _usernameController,
+                                      decoration: InputDecoration(
+                                        labelText: 'Username',
+                                        labelStyle:
+                                            const TextStyle(fontSize: 15),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
+                                        ),
+                                        prefixIcon:
+                                            const Icon(Icons.person_outline),
+                                      ),
+                                    ),
+                                  ),
+
+                                TextField(
+                                  controller: _emailController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Email',
+                                    labelStyle: const TextStyle(fontSize: 15),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    prefixIcon:
+                                        const Icon(Icons.email_outlined),
+                                  ),
+                                  keyboardType: TextInputType.emailAddress,
+                                ),
+                                const SizedBox(height: 16),
+
+                                TextField(
+                                  controller: _passwordController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Password',
+                                    labelStyle: const TextStyle(fontSize: 15),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    prefixIcon: const Icon(Icons.lock_outline),
+                                  ),
+                                  obscureText: true,
+                                ),
+                                const SizedBox(height: 28),
+
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 54,
+                                  child: ElevatedButton(
+                                    onPressed: authProvider.isLoading
+                                        ? null
+                                        : () async {
+                                            setState(() => _isLoading = true);
+                                            bool success;
+                                            if (_isSignUp) {
+                                              success = await authProvider
+                                                  .signUpWithEmail(
+                                                _emailController.text.trim(),
+                                                _passwordController.text.trim(),
+                                                _usernameController.text.trim(),
+                                              );
+                                            } else {
+                                              success = await authProvider
+                                                  .signInWithEmail(
+                                                _emailController.text.trim(),
+                                                _passwordController.text.trim(),
+                                              );
+                                            }
+                                            setState(() => _isLoading = false);
+                                            if (!mounted) return;
+                                            if (success) {
+                                              Navigator.pushReplacementNamed(
+                                                context,
+                                                '/web_home',
+                                              );
+                                            } else if (authProvider
+                                                    .approvalMessage ==
+                                                null) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    _isSignUp
+                                                        ? 'Sign-up failed. Email may exist or weak password.'
+                                                        : 'Invalid email or password.',
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFE7712D),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                    ),
+                                    child: _isLoading
+                                        ? const CircularProgressIndicator(
+                                            color: Colors.white)
+                                        : Text(
+                                            _isSignUp ? 'Sign Up' : 'Sign In',
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(width: 20),
-                          TextButton(
-                            onPressed: () => setState(() => _isSignUp = true),
-                            child: Text('Sign Up',
-                                style: TextStyle(
-                                    fontWeight: _isSignUp
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                    fontSize: 16)),
-                          ),
-                        ],
-                      ),
-                      if (_isSignUp)
-                        TextField(
-                          controller: _usernameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Username',
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                          ),
-                        ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: _passwordController,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                        ),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 24),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 52,
-                        child: ElevatedButton(
-                          onPressed: authProvider.isLoading
-                              ? null
-                              : () async {
-                                  setState(() => _isLoading = true);
-                                  bool success;
-                                  if (_isSignUp) {
-                                    success =
-                                        await authProvider.signUpWithEmail(
-                                      _emailController.text,
-                                      _passwordController.text,
-                                      _usernameController.text,
-                                    );
-                                  } else {
-                                    success =
-                                        await authProvider.signInWithEmail(
-                                      _emailController.text,
-                                      _passwordController.text,
-                                    );
-                                  }
-                                  setState(() => _isLoading = false);
-                                  if (!mounted) return;
-                                  if (success) {
-                                    Navigator.pushReplacementNamed(
-                                        context, '/web_home');
-                                  }
-                                },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFE7712D),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                          ),
-                          child: _isLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white)
-                              : Text(_isSignUp ? 'Sign Up' : 'Sign In',
-                                  style: const TextStyle(fontSize: 16)),
                         ),
                       ),
                     ],
+                  )
+                : // Mobile version
+                Card(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(28),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'assets/logo.png',
+                            height: 80,
+                            width: 80,
+                            errorBuilder: (_, __, ___) => const Icon(
+                              Icons.verified,
+                              size: 70,
+                              color: Color(0xFFE7712D),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'AES Warranty',
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFE7712D),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Powering Trust, Delivering Quality',
+                            style: TextStyle(color: Colors.grey, fontSize: 14),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 32),
+                          OutlinedButton(
+                            onPressed: authProvider.isLoading
+                                ? null
+                                : () async {
+                                    setState(() => _isLoading = true);
+                                    final success =
+                                        await authProvider.signInWithGoogle();
+                                    setState(() => _isLoading = false);
+                                    if (!mounted) return;
+                                    if (success) {
+                                      Navigator.pushReplacementNamed(
+                                          context, '/web_home');
+                                    }
+                                  },
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              minimumSize: const Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              side: BorderSide(color: Colors.grey.shade300),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/google_logo.png',
+                                  height: 24,
+                                  width: 24,
+                                  errorBuilder: (_, __, ___) => const Icon(
+                                    Icons.g_mobiledata,
+                                    size: 24,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Continue with Google',
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          const Row(
+                            children: [
+                              Expanded(child: Divider()),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: Text('OR',
+                                    style: TextStyle(color: Colors.grey)),
+                              ),
+                              Expanded(child: Divider()),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: () =>
+                                    setState(() => _isSignUp = false),
+                                child: const Text('Sign In',
+                                    style: TextStyle(fontSize: 16)),
+                              ),
+                              const SizedBox(width: 20),
+                              TextButton(
+                                onPressed: () =>
+                                    setState(() => _isSignUp = true),
+                                child: const Text('Sign Up',
+                                    style: TextStyle(fontSize: 16)),
+                              ),
+                            ],
+                          ),
+                          if (_isSignUp)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: TextField(
+                                controller: _usernameController,
+                                decoration: const InputDecoration(
+                                    labelText: 'Username'),
+                              ),
+                            ),
+                          TextField(
+                            controller: _emailController,
+                            decoration:
+                                const InputDecoration(labelText: 'Email'),
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          const SizedBox(height: 12),
+                          TextField(
+                            controller: _passwordController,
+                            decoration:
+                                const InputDecoration(labelText: 'Password'),
+                            obscureText: true,
+                          ),
+                          const SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: () async {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFE7712D),
+                              minimumSize: const Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: const Text('Sign In',
+                                style: TextStyle(fontSize: 16)),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

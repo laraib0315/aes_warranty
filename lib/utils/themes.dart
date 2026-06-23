@@ -7,7 +7,7 @@ ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   primaryColor: primaryColor,
   scaffoldBackgroundColor: Colors.white,
-  appBarTheme: AppBarTheme(
+  appBarTheme: const AppBarTheme(
     backgroundColor: Colors.white,
     foregroundColor: primaryColor,
     elevation: 0,
@@ -15,7 +15,7 @@ ThemeData lightTheme = ThemeData(
     titleTextStyle: TextStyle(
         color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
   ),
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     selectedItemColor: primaryColor,
     unselectedItemColor: Colors.grey,
     type: BottomNavigationBarType.fixed,
@@ -26,13 +26,13 @@ ThemeData lightTheme = ThemeData(
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   primaryColor: primaryColor,
-  scaffoldBackgroundColor: Color(0xFF121212),
-  appBarTheme: AppBarTheme(
+  scaffoldBackgroundColor: const Color(0xFF121212),
+  appBarTheme: const AppBarTheme(
     backgroundColor: Color(0xFF1E1E1E),
     foregroundColor: primaryColor,
     elevation: 0,
   ),
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     selectedItemColor: primaryColor,
     unselectedItemColor: Colors.grey,
     type: BottomNavigationBarType.fixed,

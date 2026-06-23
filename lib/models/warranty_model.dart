@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'customer_model.dart';
 import 'product_model.dart';
 import 'payment_model.dart';
+
 part 'warranty_model.g.dart';
 
 @HiveType(typeId: 6)
@@ -12,13 +13,42 @@ enum WarrantyStatus {
   expired,
 }
 
+@HiveType(typeId: 16)
+class ScrapInfo {
+  @HiveField(0)
+  final String metalType;
+  @HiveField(1)
+  final double weight;
+  @HiveField(2)
+  final String weightUnit;
+
+  ScrapInfo({
+    required this.metalType,
+    required this.weight,
+    required this.weightUnit,
+  });
+}
+
+@HiveType(typeId: 17)
+class WarrantyItem {
+  @HiveField(0)
+  final String uid;
+  @HiveField(1)
+  final ProductModel product;
+
+  WarrantyItem({
+    required this.uid,
+    required this.product,
+  });
+}
+
 @HiveType(typeId: 7)
 class WarrantyModel {
   @HiveField(0)
-  final String id; // UUID
+  final String id;
 
   @HiveField(1)
-  String uid; // Unique ID from QR/barcode (e.g., AES-UID-12345)
+  String uid;
 
   @HiveField(2)
   CustomerModel customer;
@@ -30,13 +60,13 @@ class WarrantyModel {
   DateTime saleDate;
 
   @HiveField(5)
-  double? sellingPrice; // actual price paid by customer
+  double? sellingPrice;
 
   @HiveField(6)
-  DateTime motorExpiryDate; // for fans, otherwise same as board
+  DateTime motorExpiryDate;
 
   @HiveField(7)
-  DateTime boardExpiryDate; // for fans, otherwise same as motor
+  DateTime boardExpiryDate;
 
   @HiveField(8)
   WarrantyStatus status;
@@ -44,18 +74,23 @@ class WarrantyModel {
   @HiveField(9)
   bool isDeleted;
 
-  // Payment tracking
   @HiveField(10)
-  double totalPaid; // total amount paid so far
+  double totalPaid;
 
   @HiveField(11)
-  double totalAmount; // total bill amount
+  double totalAmount;
 
   @HiveField(12)
-  bool isFullyPaid; // if totalPaid >= totalAmount
+  bool isFullyPaid;
 
   @HiveField(13)
-  List<PaymentModel> payments; // list of payment installments
+  List<PaymentModel> payments;
+
+  @HiveField(14)
+  List<WarrantyItem> items;
+
+  @HiveField(15)
+  ScrapInfo? scrapInfo;
 
   WarrantyModel({
     required this.id,
@@ -72,6 +107,8 @@ class WarrantyModel {
     required this.totalAmount,
     this.isFullyPaid = false,
     this.payments = const [],
+    this.items = const [],
+    this.scrapInfo,
   });
 
   WarrantyModel copyWith({
@@ -88,6 +125,8 @@ class WarrantyModel {
     double? totalAmount,
     bool? isFullyPaid,
     List<PaymentModel>? payments,
+    List<WarrantyItem>? items,
+    ScrapInfo? scrapInfo,
   }) {
     return WarrantyModel(
       id: id,
@@ -104,6 +143,8 @@ class WarrantyModel {
       totalAmount: totalAmount ?? this.totalAmount,
       isFullyPaid: isFullyPaid ?? this.isFullyPaid,
       payments: payments ?? this.payments,
+      items: items ?? this.items,
+      scrapInfo: scrapInfo ?? this.scrapInfo,
     );
   }
 }
