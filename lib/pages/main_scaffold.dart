@@ -29,19 +29,35 @@ class _MainScaffoldState extends State<MainScaffold> {
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFFE7712D),
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard), label: 'Dashboard'),
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart), label: 'Reports'),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Customers'),
+            icon: Icon(Icons.bar_chart),
+            label: 'Reports',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.inventory), label: 'Products'),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'QR Gen'),
+            icon: Icon(Icons.people),
+            label: 'Customers',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory),
+            label: 'Products',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code),
+            label: 'QR Gen',
+          ),
         ],
       ),
     );

@@ -82,7 +82,7 @@ class AuthProvider extends ChangeNotifier {
         isApproved = doc.data()?['isApproved'] ?? false;
         role = _stringToRole(doc.data()?['role'] ?? 'staff');
       } else {
-        // New user – create Firestore doc with isApproved = false
+        // New user
         await _firestore.collection('users').doc(firebaseUser.uid).set({
           'email': firebaseUser.email,
           'displayName': firebaseUser.displayName,
@@ -105,7 +105,7 @@ class AuthProvider extends ChangeNotifier {
         return false;
       }
 
-      // User is approved – save to local Hive
+      // ✅ Success - save user to Hive
       UserModel? existingUser;
       for (var u in db.userBox.values) {
         if (u.email == firebaseUser.email) {
@@ -138,8 +138,9 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      debugPrint('Google Sign-In error: $e');
+      debugPrint('❌ Google Sign-In error: $e');
       _isLoading = false;
+      _approvalMessage = 'Login failed. Please try again.';
       notifyListeners();
       return false;
     }
@@ -335,6 +336,5 @@ class AuthProvider extends ChangeNotifier {
   // ✅ Admin deny/delete user
   Future<void> denyUser(String uid) async {
     await _firestore.collection('users').doc(uid).delete();
-    // Note: Does not delete from Firebase Auth automatically
   }
 }

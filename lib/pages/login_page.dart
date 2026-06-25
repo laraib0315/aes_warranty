@@ -58,14 +58,14 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Logo – Bigger size
+                      // Logo
                       Image.asset(
                         'assets/logo.png',
-                        height: 90,
-                        width: 90,
+                        height: 80,
+                        width: 80,
                         errorBuilder: (_, __, ___) => const Icon(
                           Icons.verified,
-                          size: 80,
+                          size: 70,
                           color: Color(0xFFE7712D),
                         ),
                       ),
@@ -92,10 +92,10 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 32),
 
-                      // Google Sign-In – Proper button
+                      // Google Sign-In
                       SizedBox(
                         width: double.infinity,
-                        height: 56,
+                        height: 54,
                         child: OutlinedButton(
                           onPressed: authProvider.isLoading
                               ? null
@@ -103,19 +103,24 @@ class _LoginPageState extends State<LoginPage> {
                                   setState(() => _isLoading = true);
                                   final success =
                                       await authProvider.signInWithGoogle();
-                                  setState(() => _isLoading = false);
                                   if (!mounted) return;
-                                  if (success) {
-                                    Navigator.pushReplacementNamed(
-                                        context, '/home');
-                                  } else {
+                                  setState(() => _isLoading = false);
+                                  if (success && mounted) {
+                                    // ✅ Force navigation after rebuild
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      if (mounted) {
+                                        Navigator.pushReplacementNamed(
+                                            context, '/home');
+                                      }
+                                    });
+                                  } else if (mounted) {
                                     _showMessage(
                                         'Google Sign-In failed. Check internet.',
                                         isError: true);
                                   }
                                 },
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -126,22 +131,18 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               Image.asset(
                                 'assets/google_logo.png',
-                                height: 28,
-                                width: 28,
+                                height: 24,
+                                width: 24,
                                 errorBuilder: (_, __, ___) => const Icon(
                                   Icons.g_mobiledata,
-                                  size: 28,
+                                  size: 24,
                                   color: Colors.grey,
                                 ),
                               ),
-                              const SizedBox(width: 14),
+                              const SizedBox(width: 12),
                               const Text(
                                 'Continue with Google',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black87,
-                                ),
+                                style: TextStyle(fontSize: 16),
                               ),
                             ],
                           ),
@@ -262,15 +263,22 @@ class _LoginPageState extends State<LoginPage> {
                                     _passwordController.text.trim(),
                                   );
                                 }
-                                setState(() => _isLoading = false);
                                 if (!mounted) return;
-                                if (success) {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/home');
+                                setState(() => _isLoading = false);
+                                if (success && mounted) {
+                                  // ✅ Force navigation after rebuild
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    if (mounted) {
+                                      Navigator.pushReplacementNamed(
+                                          context, '/home');
+                                    }
+                                  });
                                 } else if (authProvider.approvalMessage !=
-                                    null) {
-                                  // Pending screen will show
-                                } else {
+                                        null &&
+                                    mounted) {
+                                  // Pending screen already showing
+                                } else if (mounted) {
                                   _showMessage(
                                     _isSignUp
                                         ? 'Sign-up failed. Email may exist or weak password.'
